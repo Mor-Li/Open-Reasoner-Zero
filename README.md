@@ -72,12 +72,19 @@ pip install -e .
 ```
 
 #### Start Orz-7B PPO Training
-debug running command in single node:
+
+debug running command:
 ```bash
+# NOTE: just for debug, not final setting!
+
+## Debug command in a single GPU with `EleutherAI/pythia-14m`
+DEBUG_MODE=True python -m playground.orz_14m_ppo_mini
+
+## Debug command in a single node (8 GPUs) with `Qwen/Qwen2.5-7B`
 DEBUG_MODE=True python -m playground.orz_7b_ppo
 ```
 
-Multi-node Training:
+Multi-node Training on 4 nodes:
 
 first on master node, run:
 ```bash
@@ -97,7 +104,7 @@ python -m playground.orz_7b_ppo
 Your training log will be shown in the master node terminal.
 
 #### Start Orz-32B PPO Training
-running command in 8 nodes:
+running command in 16 nodes:
 
 first on master node, run:
 ```bash
@@ -135,6 +142,12 @@ We are hiring talented researchers and engineers to join our team. If you are in
 
 
 [![Star History Chart](https://api.star-history.com/svg?repos=Open-Reasoner-Zero/Open-Reasoner-Zero&type=Timeline)](https://star-history.com/#Open-Reasoner-Zero/Open-Reasoner-Zero&Timeline)
+
+## Community Discussions
+
+We have a wechat group to help discussions and sharing, you can scan the QR code below to join.
+
+<img src="figure/WeChatGroup_0224.png" width="300" style="display: block; margin: 0 auto;"/>
 
 ## Citation
 
