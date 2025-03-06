@@ -231,6 +231,7 @@ outputs/
 
 scratchpad/
 
-orz_ckpt/
+docker/pytorch_wheels/orz_ckpt/
 
+orz_ckpt/
 orz_logs/
