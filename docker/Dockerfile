@@ -11,18 +11,44 @@ RUN apt-get update \
 # install pytorch_memlab
 RUN pip install py-spy pytorch_memlab
 
-# reinstall flash-attn
-RUN pip install flash-attn --no-build-isolation -U
+# 复制预下载的 PyTorch `.whl` 文件到容器
+COPY pytorch_wheels /tmp/pytorch_wheels
 
-# install python dependencies
+# 先安装 PyTorch 2.5.1、torchvision 0.20.1、torchaudio 2.5.1
+RUN pip install --no-cache-dir --no-index --find-links=/tmp/pytorch_wheels \
+    torch==2.5.1+cu121 \
+    torchvision==0.20.1+cu121 \
+    torchaudio==2.5.1+cu121
+
+# 安装 flash-attn
+RUN pip install -v /tmp/pytorch_wheels/flash_attn-2.7.4.post1+cu12torch2.5cxx11abiTRUE-cp310-cp310-linux_x86_64.whl
+
+# Remove the wheels after installation
+RUN rm -rf /tmp/pytorch_wheels
+
+RUN apt-get update && apt-get install -y \
+    build-essential \
+    libopenexr-dev \
+    libxi-dev \
+    libglfw3-dev \
+    libglew-dev \
+    libomp-dev \
+    libxinerama-dev \
+    libxcursor-dev \
+    tzdata \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
+
+# 安装 Python 依赖 (pip)
 RUN pip install loguru tqdm ninja tensorboard \
-        sentencepiece fire tabulate easydict \
-        transformers==4.48.1 awscli rpyc pythonping \
-        build-essential libopenexr-dev libxi-dev libglfw3-dev libglew-dev libomp-dev libxinerama-dev libxcursor-dev tzdata \
-        torchvision==0.18.0 hydra-core accelerate \
-        redis opentelemetry-api opentelemetry-sdk opentelemetry-exporter-otlp prometheus-client \
-        omegaconf black==22.8.0 mypy-extensions pathspec tensorboardX nvitop antlr4-python3-runtime==4.11.0 \
-        ray==2.40.0 deepspeed==0.16.0 vllm==0.6.5 peft
+    sentencepiece fire tabulate easydict \
+    transformers==4.48.1 awscli rpyc pythonping \
+    # 我猜这里应该不是非得0.18.0吧 不然他和pytorch2.5.1不兼容 然后和vllm也就不兼容了啊
+    # torchvision==0.18.0 \ 
+    hydra-core accelerate \
+    redis opentelemetry-api opentelemetry-sdk opentelemetry-exporter-otlp prometheus-client \
+    omegaconf black==22.8.0 mypy-extensions pathspec tensorboardX nvitop antlr4-python3-runtime==4.11.0 \
+    ray==2.40.0 deepspeed==0.16.0 vllm==0.6.5 peft
 
 RUN apt update && apt install --fix-broken && apt install -y default-jre-headless openjdk-8-jdk
 RUN eval $(curl -s deploy.i.basemind.com/httpproxy) && pip install git+https://github.com/facebookresearch/hydra.git
