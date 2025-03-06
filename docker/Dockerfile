@@ -68,3 +68,7 @@ COPY partitioned_param_coordinator.py /usr/local/lib/python3.10/dist-packages/de
 
 # launch script
 WORKDIR /workspace/
+
+# (pid=8159) Warning: Your installation of OpenCV appears to be broken: module 'cv2.dnn' has no attribute 'DictValue'.Please follow the instructions at https://github.com/opencv/opencv-python/issues/884 to correct your environment. The import of cv2 has been skipped.
+# (pid=8159) WARNING 03-06 20:26:26 cuda.py:32] You are using a deprecated `pynvml` package. Please install `nvidia-ml-py` instead, and make sure to uninstall `pynvml`. When both of them are installed, `pynvml` will take precedence and cause errors. See https://pypi.org/project/pynvml for more information.
+# (LLMActor pid=8159) WARNING 03-06 20:26:31 config.py:2171] Casting torch.float16 to torch.bfloat16.
