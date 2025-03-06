@@ -19,6 +19,7 @@
 if sudo docker ps -a --format '{{.Names}}' | grep -q '^orz_container$'; then
     sudo docker rm -f orz_container
 fi
+
 sudo docker run --gpus all -it \
     --name orz_container \
     --ipc=host \
@@ -27,5 +28,6 @@ sudo docker run --gpus all -it \
     -w /workspace \
     fs-computility-cn-beijing.cr.volces.com/devinstance-archive/orz:latest /bin/bash
 
+cd /fs-computility/mllm1/limo/workspace/stepfun/Open-Reasoner-Zero
 export HF_ENDPOINT=https://hf-mirror.com
-DEBUG_MODE=True python -m playground.orz_14m_ppo_mini
+DEBUG_MODE=True python -m playground.orz_7b_ppo
