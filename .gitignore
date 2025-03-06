@@ -231,3 +231,6 @@ outputs/
 
 scratchpad/
 
+orz_ckpt/
+
+orz_logs/
