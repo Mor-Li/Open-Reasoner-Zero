@@ -235,3 +235,4 @@ docker/pytorch_wheels/orz_ckpt/
 
 orz_ckpt/
 orz_logs/
+orz_ckpt_default
