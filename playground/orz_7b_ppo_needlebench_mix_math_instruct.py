@@ -127,7 +127,7 @@ class PPOExpConfig(BasePPOExpConfig):
     zero_stage: int = 3  # ZeRO优化阶段
 
     # 路径相关设置
-    pretrain: Optional[str] = "Qwen/Qwen2.5-7B" # 预训练模型路径，可以替换为本地下载的模型路径
+    pretrain: Optional[str] = "Qwen/Qwen2.5-7B-Instruct" # 预训练模型路径，可以替换为本地下载的模型路径
     reward_pretrain: Optional[str] = None  # 奖励模型预训练路径
     save_interval: int = 50  # 保存模型的间隔步数
     ckpt_path: str = f"orz_ckpt/{file_name}"  # 检查点保存路径
@@ -138,7 +138,8 @@ class PPOExpConfig(BasePPOExpConfig):
     # MathTrain数据集和Math500评估数据集
     prompt_data: ListConfig = ListConfig(
         [
-            "data/orz_math_57k_collected.json",  # 训练数据集路径
+            "data/needlebench_atc_training.json",  # 训练数据集路径
+            "data/orz_math_57k_collected.json"
         ]
     )
     eval_prompt_data: ListConfig = ListConfig(
@@ -146,6 +147,7 @@ class PPOExpConfig(BasePPOExpConfig):
             "data/eval_data/math500.json",  # 评估数据集路径
             "data/eval_data/aime2024.json",  # AIME 2024评估数据集
             "data/eval_data/gpqa_diamond.json",  # GPQA Diamond评估数据集
+            "data/eval_data/needlebench_atc.json",  # GPQA Diamond评估数据集
         ]
     )
     prompt_data_probs: ListConfig = ListConfig([1.0])  # 各数据集的采样概率

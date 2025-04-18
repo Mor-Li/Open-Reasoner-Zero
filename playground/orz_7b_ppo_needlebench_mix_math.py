@@ -138,7 +138,8 @@ class PPOExpConfig(BasePPOExpConfig):
     # MathTrain数据集和Math500评估数据集
     prompt_data: ListConfig = ListConfig(
         [
-            "data/orz_math_57k_collected.json",  # 训练数据集路径
+            "data/needlebench_atc_training.json",  # 训练数据集路径
+            "data/orz_math_57k_collected.json"
         ]
     )
     eval_prompt_data: ListConfig = ListConfig(
@@ -146,6 +147,7 @@ class PPOExpConfig(BasePPOExpConfig):
             "data/eval_data/math500.json",  # 评估数据集路径
             "data/eval_data/aime2024.json",  # AIME 2024评估数据集
             "data/eval_data/gpqa_diamond.json",  # GPQA Diamond评估数据集
+            "data/eval_data/needlebench_atc.json",  # GPQA Diamond评估数据集
         ]
     )
     prompt_data_probs: ListConfig = ListConfig([1.0])  # 各数据集的采样概率
