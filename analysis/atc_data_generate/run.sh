@@ -1,0 +1,1 @@
+python analysis/atc_data_generate/atc.py --language both --needle_counts 2,4,8,16,32,64,128,256,512 --train_repeats 10 --eval_repeats 5
