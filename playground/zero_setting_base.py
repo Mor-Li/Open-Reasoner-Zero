@@ -32,7 +32,10 @@ This is the problem:
             bos_token = self.tokenizer.decode([self.tokenizer.bos_token_id])
         prompt = prompt_template.render(bos_token=bos_token, prompt=prompt_instruction)
 
-        extra = {"answer": dialogue[1]["ground_truth"]["value"]}
+        extra = {
+            "answer": dialogue[1]["ground_truth"]["value"],
+            "ground_truth": dialogue[1]["ground_truth"]
+        }
 
         return prompt, extra
 

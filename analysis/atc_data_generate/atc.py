@@ -31,6 +31,19 @@ class QuestionType(Enum):
     NTH_DESCENDANT = 2        # N级子节点
     RELATIONSHIP_DISTANCE = 3 # 关系距离
 
+# Add abbreviation mappings for question types and languages
+QUESTION_TYPE_ABBREV = {
+    QuestionType.ELDEST_ANCESTOR: "ea",
+    QuestionType.NTH_ANCESTOR: "na",
+    QuestionType.NTH_DESCENDANT: "nd",
+    QuestionType.RELATIONSHIP_DISTANCE: "rd"
+}
+
+LANGUAGE_ABBREV = {
+    "English": "en",
+    "Chinese": "zh"
+}
+
 # 定义关系术语的代数映射（一代关系还是两代关系）
 relationship_generation_map_zh = {
     '父亲': 1,
@@ -627,12 +640,16 @@ if __name__ == '__main__':
     for question_type in question_types:
         for is_training in [True, False]:
             for lang in languages:
-                # 创建文件名
-                data_type = "training" if is_training else "eval"
+                # Use abbreviated names for file generation
+                data_type = "train" if is_training else "eval"
                 repeats = args.train_repeats if is_training else args.eval_repeats
                 
+                # Get abbreviations
+                qt_abbrev = QUESTION_TYPE_ABBREV[question_type]
+                lang_abbrev = LANGUAGE_ABBREV[lang]
+                
                 output_dir = train_dir if is_training else eval_dir
-                filename = f"needlebench_atc_{question_type.name.lower()}_{lang.lower()}.json"
+                filename = f"atc_{qt_abbrev}_{lang_abbrev}.json"
                 output_path = os.path.join(output_dir, filename)
                 
                 # 生成明确不同的种子范围
