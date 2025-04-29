@@ -84,7 +84,8 @@ class RayConfig:
         'HF_DATASETS_OFFLINE=1',
         'TRANSFORMERS_OFFLINE=1',
         'HF_EVALUATE_OFFLINE=1',
-        'HF_HUB_OFFLINE=1'
+        'HF_HUB_OFFLINE=1',
+        'HF_ENDPOINT=https://hf-mirror.com'
     ])
     # 存储配置相关
     vepfs_id: str = ""  # VePFS ID (兼容旧版本，使用单个VePFS挂载)

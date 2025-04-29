@@ -3,7 +3,7 @@
 
 # 1 node for default sequence length
 python /fs-computility/llmeval/limo/stepfun/Open-Reasoner-Zero/volc_tools.py \
-    --task-cmd '. /fs-computility/llmeval/limo/stepfun/Open-Reasoner-Zero/docker/container_commands.sh' \
+    --task-cmd 'cd /fs-computility/llmeval/limo/stepfun/Open-Reasoner-Zero && DEBUG_MODE=True python -m playground.orz_7b_ppo_atc_prm' \
     --log-level DEBUG \
     --num-gpus 8 \
     --num-replicas 1 \
@@ -14,7 +14,7 @@ python /fs-computility/llmeval/limo/stepfun/Open-Reasoner-Zero/volc_tools.py \
 
 # 1 node for 32k to llmeval_volc queue
 python /fs-computility/llmeval/limo/stepfun/Open-Reasoner-Zero/volc_tools.py \
-    --task-cmd '. /fs-computility/llmeval/limo/stepfun/Open-Reasoner-Zero/docker/container_commands_32k.sh' \
+    --task-cmd 'cd /fs-computility/llmeval/limo/stepfun/Open-Reasoner-Zero && DEBUG_MODE=True python -m playground.orz_7b_ppo_atc_prm_32k' \
     --log-level DEBUG \
     --num-gpus 8 \
     --num-replicas 1 \
@@ -25,7 +25,7 @@ python /fs-computility/llmeval/limo/stepfun/Open-Reasoner-Zero/volc_tools.py \
 
 # 1 node for 32k to mllm1 queue
 python /fs-computility/llmeval/limo/stepfun/Open-Reasoner-Zero/volc_tools.py \
-    --task-cmd '. /fs-computility/llmeval/limo/stepfun/Open-Reasoner-Zero/docker/container_commands_32k.sh' \
+    --task-cmd 'cd /fs-computility/llmeval/limo/stepfun/Open-Reasoner-Zero && DEBUG_MODE=True python -m playground.orz_7b_ppo_atc_prm_32k' \
     --log-level DEBUG \
     --num-gpus 8 \
     --num-replicas 1 \
@@ -37,7 +37,7 @@ python /fs-computility/llmeval/limo/stepfun/Open-Reasoner-Zero/volc_tools.py \
 
 # 2 nodes to llmeval_volc queue
 python /fs-computility/llmeval/limo/stepfun/Open-Reasoner-Zero/ray_deploy.py \
-  --task-cmd ". /fs-computility/llmeval/limo/stepfun/Open-Reasoner-Zero/docker/container_commands_32k_2node.sh" \
+  --task-cmd "cd /fs-computility/llmeval/limo/stepfun/Open-Reasoner-Zero && python -m playground.orz_7b_ppo_atc_prm_32k" \
   --n-nodes 2 \
   --n-gpus-per-node 8 \
   --queue-name "q-20241107085952-dnfrk" \
@@ -49,7 +49,7 @@ python /fs-computility/llmeval/limo/stepfun/Open-Reasoner-Zero/ray_deploy.py \
 # 2 nodes to mllm1 queue
 
 python /fs-computility/llmeval/limo/stepfun/Open-Reasoner-Zero/ray_deploy.py \
-  --task-cmd ". /fs-computility/llmeval/limo/stepfun/Open-Reasoner-Zero/docker/container_commands_32k_2node.sh" \
+  --task-cmd "cd /fs-computility/llmeval/limo/stepfun/Open-Reasoner-Zero && python -m playground.orz_7b_ppo_atc_prm_32k" \
   --n-nodes 2 \
   --n-gpus-per-node 8 \
   --queue-name "q-20241107090119-5rpvq" \
