@@ -1,5 +1,5 @@
 #!/bin/bash
-cd /fs-computility/mllm1/limo/workspace/stepfun/Open-Reasoner-Zero
+cd /fs-computility/llmeval/limo/stepfun/Open-Reasoner-Zero
 export HF_ENDPOINT=https://hf-mirror.com
 DEBUG_MODE=True python -m playground.orz_7b_ppo_needlebench_mix_math_instruct
 
