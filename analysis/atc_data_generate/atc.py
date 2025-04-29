@@ -649,7 +649,7 @@ if __name__ == '__main__':
                 lang_abbrev = LANGUAGE_ABBREV[lang]
                 
                 output_dir = train_dir if is_training else eval_dir
-                filename = f"atc_{qt_abbrev}_{lang_abbrev}.json"
+                filename = f"{qt_abbrev}_{lang_abbrev}.json"
                 output_path = os.path.join(output_dir, filename)
                 
                 # 生成明确不同的种子范围

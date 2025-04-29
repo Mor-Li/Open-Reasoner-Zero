@@ -138,26 +138,26 @@ class PPOExpConfig(BasePPOExpConfig):
     # MathTrain数据集和Math500评估数据集
     prompt_data: ListConfig = ListConfig(
         [
-            "data/atc_ea_zh.json",  # 祖先追溯测试-中文
-            "data/atc_ea_en.json",  # 祖先追溯测试-英文
-            "data/atc_na_zh.json",  # 第n代祖先-中文
-            "data/atc_na_en.json",  # 第n代祖先-英文
-            "data/atc_nd_zh.json",  # 第n代后代-中文
-            "data/atc_nd_en.json",  # 第n代后代-英文
-            "data/atc_rd_zh.json",  # 亲属距离-中文
-            "data/atc_rd_en.json",  # 亲属距离-英文
+            "data/ea_zh.json",  # 祖先追溯测试-中文
+            "data/ea_en.json",  # 祖先追溯测试-英文
+            "data/na_zh.json",  # 第n代祖先-中文
+            "data/na_en.json",  # 第n代祖先-英文
+            "data/nd_zh.json",  # 第n代后代-中文
+            "data/nd_en.json",  # 第n代后代-英文
+            "data/rd_zh.json",  # 亲属距离-中文
+            "data/rd_en.json",  # 亲属距离-英文
         ]
     )
     eval_prompt_data: ListConfig = ListConfig(
         [
-            "data/eval_data/atc_ea_zh.json",
-            "data/eval_data/atc_ea_en.json",
-            "data/eval_data/atc_na_zh.json",
-            "data/eval_data/atc_na_en.json",
-            "data/eval_data/atc_nd_zh.json",
-            "data/eval_data/atc_nd_en.json",
-            "data/eval_data/atc_rd_zh.json",
-            "data/eval_data/atc_rd_en.json",
+            "data/eval_data/ea_zh.json",
+            "data/eval_data/ea_en.json",
+            "data/eval_data/na_zh.json",
+            "data/eval_data/na_en.json",
+            "data/eval_data/nd_zh.json",
+            "data/eval_data/nd_en.json",
+            "data/eval_data/rd_zh.json",
+            "data/eval_data/rd_en.json",
         ]
     )
     prompt_data_probs: ListConfig = ListConfig([1.0])  # 各数据集的采样概率
@@ -589,14 +589,14 @@ class CustomRewardTrainer(RayPPOTrainer):
 
         # 创建数据集名称到简写的映射
         dataset_name_abbrev = {
-            "needlebench_atc_eldest_ancestor_chinese": "atc_ea_zh",
-            "needlebench_atc_eldest_ancestor_english": "atc_ea_en",
-            "needlebench_atc_nth_ancestor_chinese": "atc_na_zh",
-            "needlebench_atc_nth_ancestor_english": "atc_na_en",
-            "needlebench_atc_nth_descendant_chinese": "atc_nd_zh",
-            "needlebench_atc_nth_descendant_english": "atc_nd_en",
-            "needlebench_atc_relationship_distance_chinese": "atc_rd_zh",
-            "needlebench_atc_relationship_distance_english": "atc_rd_en"
+            "needlebench_atc_eldest_ancestor_chinese": "ea_zh",
+            "needlebench_atc_eldest_ancestor_english": "ea_en",
+            "needlebench_atc_nth_ancestor_chinese": "na_zh",
+            "needlebench_atc_nth_ancestor_english": "na_en",
+            "needlebench_atc_nth_descendant_chinese": "nd_zh",
+            "needlebench_atc_nth_descendant_english": "nd_en",
+            "needlebench_atc_relationship_distance_chinese": "rd_zh",
+            "needlebench_atc_relationship_distance_english": "rd_en"
         }
         
         # 构建输出文件名，使用缩写后的数据集名称
