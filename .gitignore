@@ -239,3 +239,4 @@ orz_ckpt_default
 
 
 tmp/
+.gradio
