@@ -554,10 +554,15 @@ if __name__ == '__main__':
                         }}
                     ]
                 else:
-                    # 评估数据使用简单格式
+                    # 评估数据也使用包含详细信息的格式
                     example = {
                         "prompt": [{"from": "user", "value": prompt}],
-                        "final_answer": answer
+                        "final_answer": answer,
+                        "details": {
+                            "names": names,
+                            "needle_count": num_needles,
+                            "total_generations": total_generations
+                        }
                     }
                 
                 examples.append(example)
