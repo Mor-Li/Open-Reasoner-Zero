@@ -84,17 +84,53 @@ def read_jsonl(filepath: str) -> List[Dict[str, Any]]:
                     print(f"Warning: Could not parse line in {filepath}: {line}")
     return data
 
-def extract_improved_questions(run_dir: str, output_dir: str, problems_per_task: int = 45):
+def load_eval_data(data_dir: str) -> Dict[str, List[Dict[str, Any]]]:
+    """
+    Load original evaluation data files to extract detail information.
+    
+    Args:
+        data_dir: Directory containing the original eval data files
+        
+    Returns:
+        Dictionary mapping task_type to list of evaluation data items
+    """
+    eval_data = {}
+    
+    # Look for json files in the data directory
+    for file in os.listdir(data_dir):
+        if file.endswith('.json') and not file.startswith('.'):
+            task_type = file.replace('.json', '')
+            
+            # Skip files that don't match our expected task types pattern
+            if not re.match(r'(ea|na|nd|rd)_(en|zh)', task_type) and task_type not in ['aime2024', 'gpqa_diamond', 'math500', 'needlebench_atc']:
+                continue
+                
+            try:
+                with open(os.path.join(data_dir, file), 'r', encoding='utf-8') as f:
+                    data = json.load(f)
+                    eval_data[task_type] = data
+                    print(f"Loaded {len(data)} items from {file}")
+            except Exception as e:
+                print(f"Error loading {file}: {str(e)}")
+                
+    return eval_data
+
+def extract_improved_questions(run_dir: str, output_dir: str, eval_data_dir: str = "data/eval_data", problems_per_task: int = 45):
     """
     Extract questions that were initially wrong but became correct in the final iteration.
     
     Args:
         run_dir: Directory containing evaluation output files
         output_dir: Directory to save extracted questions
+        eval_data_dir: Directory containing original evaluation data files
         problems_per_task: Number of problems per task type (default: 45)
     """
     output_dir = Path(output_dir)
     output_dir.mkdir(parents=True, exist_ok=True)
+    
+    # Load original evaluation data to get details
+    print(f"Loading original evaluation data from {eval_data_dir}")
+    eval_data = load_eval_data(eval_data_dir)
     
     # Find all evaluation output files
     eval_files = []
@@ -175,6 +211,15 @@ def extract_improved_questions(run_dir: str, output_dir: str, problems_per_task:
         # Calculate local index within the task type dataset
         local_index = i % problems_per_task
         
+        # Extract detail information from original eval data
+        detail_info = {}
+        if task_type in eval_data and local_index < len(eval_data[task_type]):
+            eval_item = eval_data[task_type][local_index]
+            if "details" in eval_item:
+                detail_info = eval_item["details"]
+            elif "detail" in eval_item:
+                detail_info = eval_item["detail"]
+        
         # Check if question improved
         if first_item.get("iscorrect", False) == False and last_item.get("iscorrect", False) == True:
             question_info = {
@@ -185,7 +230,8 @@ def extract_improved_questions(run_dir: str, output_dir: str, problems_per_task:
                 "prompt": first_item.get("prompt", ""),
                 "first_answer": first_item.get("output", ""),
                 "last_answer": last_item.get("output", ""),
-                "reference_answer": first_item.get("answer", "")
+                "reference_answer": first_item.get("answer", ""),
+                "details": detail_info  # Add the details from original eval data
             }
             improved_questions.append(question_info)
             questions_by_task[task_type].append(question_info)
@@ -241,6 +287,7 @@ def extract_improved_questions(run_dir: str, output_dir: str, problems_per_task:
             "question_id": local_index,
             "prompt": question_info["prompt"],
             "reference_answer": question_info["reference_answer"],
+            "details": question_info.get("details", {}),  # Include details from original eval data
             "iterations": {}
         }
         
@@ -259,11 +306,13 @@ def main():
     parser.add_argument('run_dir', help='Directory containing evaluation output files')
     parser.add_argument('--output-dir', default='analysis/eval_analysis/improved_questions', 
                       help='Directory to save extracted questions')
+    parser.add_argument('--eval-data-dir', default='data/eval_data',
+                      help='Directory containing original evaluation data files')
     parser.add_argument('--problems-per-task', type=int, default=45,
                       help='Number of problems per task type (default: 45)')
     
     args = parser.parse_args()
-    extract_improved_questions(args.run_dir, args.output_dir, args.problems_per_task)
+    extract_improved_questions(args.run_dir, args.output_dir, args.eval_data_dir, args.problems_per_task)
 
 if __name__ == "__main__":
     main() 
