@@ -287,4 +287,4 @@ def create_interface():
 if __name__ == "__main__":
     # Create and launch the interface
     interface = create_interface()
-    interface.launch(share=True) 
+    interface.launch(share=True,server_port=8080)
