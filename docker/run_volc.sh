@@ -12,9 +12,6 @@ python /fs-computility/llmeval/limo/stepfun/Open-Reasoner-Zero/volc_tools.py \
     --image 'fs-computility-cn-beijing.cr.volces.com/devinstance-archive/orz:latest' \
     --yes
 
-
-
-
 # 1 node for default sequence length to llmeval_volc queue and train from instruct model and needle 128
 python /fs-computility/llmeval/limo/stepfun/Open-Reasoner-Zero/volc_tools.py \
     --task-cmd 'cd /fs-computility/llmeval/limo/stepfun/Open-Reasoner-Zero && DEBUG_MODE=True python -m playground.orz_7b_ppo_atc_prm_instruct_128' \
@@ -25,14 +22,6 @@ python /fs-computility/llmeval/limo/stepfun/Open-Reasoner-Zero/volc_tools.py \
     --queue-name "llmeval_volc" \
     --image 'fs-computility-cn-beijing.cr.volces.com/devinstance-archive/orz:latest' \
     --yes
-
-
-
-
-
-
-
-
 
 # 1 node for default sequence length and vanilla ppo reward
 python /fs-computility/llmeval/limo/stepfun/Open-Reasoner-Zero/volc_tools.py \
@@ -58,32 +47,6 @@ python /fs-computility/llmeval/limo/stepfun/Open-Reasoner-Zero/volc_tools.py \
     --yes
 
 
-
-
-
-# 1 node for 32k to llmeval_volc queue
-python /fs-computility/llmeval/limo/stepfun/Open-Reasoner-Zero/volc_tools.py \
-    --task-cmd 'cd /fs-computility/llmeval/limo/stepfun/Open-Reasoner-Zero && DEBUG_MODE=True python -m playground.orz_7b_ppo_atc_prm_32k' \
-    --log-level DEBUG \
-    --num-gpus 8 \
-    --num-replicas 1 \
-    --task-name "orz_7b_ppo_atc_prm_32k" \
-    --queue-name "llmeval_volc" \
-    --image 'fs-computility-cn-beijing.cr.volces.com/devinstance-archive/orz:latest' \
-    --yes
-
-# 1 node for 32k to mllm1 queue
-python /fs-computility/llmeval/limo/stepfun/Open-Reasoner-Zero/volc_tools.py \
-    --task-cmd 'cd /fs-computility/llmeval/limo/stepfun/Open-Reasoner-Zero && DEBUG_MODE=True python -m playground.orz_7b_ppo_atc_prm_32k' \
-    --log-level DEBUG \
-    --num-gpus 8 \
-    --num-replicas 1 \
-    --task-name "orz_7b_ppo_atc_prm_32k" \
-    --queue-name "mllm1" \
-    --image 'fs-computility-cn-beijing.cr.volces.com/devinstance-archive/orz:latest' \
-    --yes
-
-
 # 2 nodes to llmeval_volc queue
 # multi node use ray[default] so orz:v2
 python /fs-computility/llmeval/limo/stepfun/Open-Reasoner-Zero/ray_deploy.py \
@@ -91,18 +54,7 @@ python /fs-computility/llmeval/limo/stepfun/Open-Reasoner-Zero/ray_deploy.py \
   --n-nodes 2 \
   --n-gpus-per-node 8 \
   --queue-name "llmeval_volc" \
-  --task-name "orz_7b_ppo_atc_prm_32k_2nodes" \
+  --task-name "orz_7b_ppo_atc_prm_instruct_128" \
   --log-level DEBUG \
   --image 'fs-computility-cn-beijing.cr.volces.com/devinstance-archive/orz:v2' \
-  --yes
-
-# 2 nodes to mllm1 queue
-python /fs-computility/llmeval/limo/stepfun/Open-Reasoner-Zero/ray_deploy.py \
-  --task-cmd "cd /fs-computility/llmeval/limo/stepfun/Open-Reasoner-Zero && python -m playground.orz_7b_ppo_atc_prm" \
-  --n-nodes 2 \
-  --n-gpus-per-node 8 \
-  --queue-name "mllm1" \
-  --task-name "orz_7b_ppo_atc_prm_32k_2nodes" \
-  --log-level DEBUG \
-  --image 'fs-computility-cn-beijing.cr.volces.com/devinstance-archive/orz:latest' \
   --yes
