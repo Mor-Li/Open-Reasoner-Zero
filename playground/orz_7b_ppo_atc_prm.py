@@ -109,7 +109,7 @@ class PPOExpConfig(BasePPOExpConfig):
     use_orm_score: bool = False  # 是否使用ORM评分
 
     # 条件设置，根据是否为调试模式设置不同的值
-    total_num_nodes: int = 32 if not DEBUG_MODE else 8  # 总节点数
+    total_num_nodes: int = 16 if not DEBUG_MODE else 8  # 总节点数
 
     # 资源相关设置
     ref_num_nodes: int = total_num_nodes  # 参考模型使用的节点数
@@ -171,12 +171,12 @@ class PPOExpConfig(BasePPOExpConfig):
     advantage_normalize: bool = True  # 是否对优势函数进行归一化处理
 
     num_episodes: int = 20  # 训练的总episode数
-    rollout_batch_size: int = 128 if not DEBUG_MODE else 16  # 每次rollout的批量大小，调试模式下使用较小值
-    n_samples_per_prompt: int = 64 if not DEBUG_MODE else 2  # 每个提示生成的样本数，调试模式下使用较小值
+    rollout_batch_size: int = 64 if not DEBUG_MODE else 16  # 每次rollout的批量大小，调试模式下使用较小值
+    n_samples_per_prompt: int = 32 if not DEBUG_MODE else 2  # 每个提示生成的样本数，调试模式下使用较小值
     micro_rollout_batch_size: int = 128 if not DEBUG_MODE else 128  # 微批量rollout的大小
 
     policy_update_steps: int = 1  # 每次迭代中策略网络的更新步数
-    critic_update_steps: int = 12 if not DEBUG_MODE else 1  # 每次迭代中价值网络的更新步数，调试模式下使用较小值
+    critic_update_steps: int = 6 if not DEBUG_MODE else 1  # 每次迭代中价值网络的更新步数，调试模式下使用较小值
     micro_train_batch_size: int = 1  # 训练时的微批量大小
     micro_forward_batch_size: int = 1  # 前向传播的微批量大小
     freezing_actor_steps: int = -1  # Actor冻结的步数，-1表示不冻结

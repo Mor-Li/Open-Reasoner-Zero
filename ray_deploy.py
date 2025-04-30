@@ -7,6 +7,13 @@ from typing import Dict, Optional, List  # 导入类型提示
 from dataclasses import dataclass, field, asdict  # 导入数据类相关模块
 from loguru import logger  # 导入日志模块
 
+# 队列名称到队列ID的映射字典
+QUEUE_NAME_TO_ID = {
+    "llmeval_volc": "q-20241107085952-dnfrk",
+    "mllm1": "q-20241107090119-5rpvq",
+    # 可以添加更多队列名称映射
+}
+
 # 配置loguru日志记录器（默认只输出到控制台，不生成本地文件日志）
 logger.remove()  # 移除默认处理器
 logger.add(
@@ -66,16 +73,18 @@ class RayConfig:
     """Ray分布式训练配置。"""
     task_name: str = 'ray-distributed-training'  # 任务名称
     queue_name: str = 'q-20241107085952-dnfrk'  # 队列ID
-    framework: str = 'Ray'  # 框架类型
+    framework: str = 'Custom'  # 框架类型（改为Custom）
     flavor: str = 'ml.hpcpni2l.28xlarge'  # 机器类型（默认8卡）
     n_nodes: int = 2  # 节点数
     n_gpus_per_node: int = 8  # 每个节点的GPU数量
     image: str = "fs-computility-cn-beijing.cr.volces.com/devinstance-archive/orz:latest"  # Docker镜像
     active_deadline_seconds: int = 864000  # 活动期限（秒）
     extra_envs: list = field(default_factory=lambda: [  # 额外的环境变量
-        'TORCH_NCCL_AVOID_RECORD_STREAMS=1',
-        'VLLM_ATTENTION_BACKEND=XFORMERS',
-        'VLLM_USE_V1=1',
+        # 'TORCH_NCCL_AVOID_RECORD_STREAMS=1',
+        # 'VLLM_ATTENTION_BACKEND=XFORMERS',
+        # 'VLLM_USE_V1=1',
+        # 上面应该都是DAPO的那个参考代码中被o3复制过来的 
+        # orz的vllm版本中这个不能用V1
         # 添加额外的环境变量
         'COMPASS_DATA_CACHE=/fs-computility/llm/shared/llmeval/datasets/compass_data_cache',
         'TORCH_HOME=/fs-computility/llm/shared/llmeval/torch',
@@ -208,8 +217,8 @@ class RayDeployment:
                 "Framework": self.config.framework,
                 "TaskRoleSpecs": [
                     {
-                        "RoleName": "head",
-                        "RoleReplicas": 1,
+                        "RoleName": "worker",
+                        "RoleReplicas": self.config.n_nodes,  # 所有节点都使用worker角色
                         "Flavor": self.config.flavor,
                     }
                 ],
@@ -223,14 +232,6 @@ class RayDeployment:
                     "PolicySets": [],
                 },
             }
-            
-            # 如果有worker节点，添加worker配置
-            if self.config.n_nodes > 1:
-                ray_cfg["TaskRoleSpecs"].append({
-                    "RoleName": "worker",
-                    "RoleReplicas": self.config.n_nodes - 1,  # 减去head节点
-                    "Flavor": self.config.flavor,
-                })
             
             # 添加存储配置
             storage_config = self.build_storage_config()
@@ -330,7 +331,7 @@ def parse_args():
     
     # 共享参数
     parser.add_argument('--task-name', help='覆盖默认任务名称')
-    parser.add_argument('--queue-name', help='覆盖默认队列名称或ID')
+    parser.add_argument('--queue-name', help='队列名称或ID。可以使用简单名称如 "llmeval_volc" 或 "mllm1"，将自动映射到对应的队列ID')
     parser.add_argument('--image', help="覆盖默认镜像")
     parser.add_argument('--extra-envs', nargs='+', help='额外的环境变量，格式为KEY=VALUE')
     
@@ -359,6 +360,25 @@ def parse_args():
     parser.add_argument('--yes', action='store_true', help='自动确认部署，不提示')
     
     return parser.parse_args()
+
+def get_queue_id(queue_name: str) -> str:
+    """
+    将队列名称转换为队列ID。
+    如果输入的已经是队列ID或者名称不在映射字典中，则直接返回输入值。
+    """
+    # 检查是否是已经以'q-'开头的ID
+    if queue_name.startswith('q-'):
+        return queue_name
+    
+    # 尝试从映射字典中获取ID
+    queue_id = QUEUE_NAME_TO_ID.get(queue_name)
+    if queue_id:
+        logger.info(f"将队列名称 '{queue_name}' 映射到队列ID '{queue_id}'")
+        return queue_id
+    
+    # 如果映射不存在，返回原始输入
+    logger.warning(f"未找到队列名称 '{queue_name}' 的映射，将直接使用作为队列ID")
+    return queue_name
 
 def main():
     """主执行函数。"""
@@ -397,10 +417,10 @@ def main():
         else:
             logger.warning("无法从YAML配置文件中提取队列ID")
     
-    # 如果命令行指定了队列名称，且没有从YAML中提取到队列ID，使用命令行参数
-    if args.queue_name and not queue_id:
-        queue_id = args.queue_name
-        logger.warning(f"使用命令行指定的队列名称/ID: {queue_id}")
+    # 如果命令行指定了队列名称，使用命令行参数（可能需要转换）
+    if args.queue_name:
+        queue_id = get_queue_id(args.queue_name)
+        logger.info(f"使用命令行指定的队列: {args.queue_name} -> {queue_id}")
     
     # 如果仍然没有队列ID，使用默认值
     if not queue_id:
