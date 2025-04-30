@@ -1,0 +1,2 @@
+python analysis/eval_analysis/visualize_progress.py
+# 其他的run的命令可以参考cursor的聊天记录
